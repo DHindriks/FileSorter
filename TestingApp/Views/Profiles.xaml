@@ -20,7 +20,39 @@
         </Grid>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
-            //CONTENT HERE, THIS IS THE PROFILES PAGE
+            <StackPanel>
+
+                <Button Content="Add Rule" Command="{Binding AddRuleCommand}" />
+
+                <ItemsControl ItemsSource="{Binding Rules}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Padding="5">
+                                <StackPanel>
+                                    
+                                    <TextBlock Text="Target folder:" />
+
+                                    <TextBox Text="{Binding TargetFolder}" />
+
+                                    <TextBlock Text="Extensions:" />
+
+                                    <ItemsControl ItemsSource="{Binding Extensions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding .}" Margin="2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <Button Content="Add Extension" Command="{Binding DataContext.AddExtensionCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
         </ScrollViewer>
     </Grid>
 </UserControl>
