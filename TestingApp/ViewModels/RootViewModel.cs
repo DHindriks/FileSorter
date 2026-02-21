@@ -10,9 +10,12 @@
         private SettingsViewModel _settingsVm;
         private ProfilesViewModel _profilesVm;
 
-        public RootViewModel(ISorter sorter)
+        public RootViewModel()
         {
-            _sorter = sorter;
+            if (_sorter == null)
+            {
+                _sorter = new Sorter();
+            }
             ShowMain();
         }
 

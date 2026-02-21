@@ -21,9 +21,7 @@
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
             <StackPanel>
-
-                <Button Content="Add Rule" Command="{Binding AddRuleCommand}" />
-
+                
                 <ItemsControl ItemsSource="{Binding Rules}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -44,7 +42,8 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
 
-                                    <Button Content="Add Extension" Command="{Binding DataContext.AddExtensionCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                                    <Button Margin="5"  Content="Add Extension" Command="{Binding DataContext.AddExtensionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+                                    <Button Margin="5" Content="Remove rule" Command="{Binding DataContext.RemoveRuleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
 
                                 </StackPanel>
                             </Border>
@@ -54,5 +53,8 @@
 
             </StackPanel>
         </ScrollViewer>
+        
+        <Button Grid.Row="2" Margin="10" Content="Add Rule" Command="{Binding AddRuleCommand}" />
+        
     </Grid>
 </UserControl>

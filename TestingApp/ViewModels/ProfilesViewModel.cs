@@ -31,7 +31,10 @@ namespace FileSorter.ViewModels
         private void RemoveRule(Rule rule)
         {
             if (rule != null)
+            {
                 Rules.Remove(rule);
+            }
+            
         }
 
     }

@@ -23,10 +23,7 @@ namespace FileSorter.Views
         {
             InitializeComponent(); 
 
-
-
-            ISorter sorter = new Sorter();
-            DataContext = new RootViewModel(sorter);
+            DataContext = new RootViewModel();
         }
     }
 }
