@@ -1,6 +1,8 @@
-﻿using System;
+﻿using FileSorter.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
 
 namespace FileSorter.Rule_system
@@ -8,11 +10,24 @@ namespace FileSorter.Rule_system
     public class Rule
     {
         public string TargetFolder { get; set; }
-        public ObservableCollection<string> Extensions { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<ExtensionItem> Extensions { get; set; } = new ObservableCollection<ExtensionItem>();
     }
 
-    public class RuleSet
+    public class ExtensionItem : INotifyPropertyChanged
     {
-        public ObservableCollection<Rule> rules { get; set; } = new ObservableCollection<Rule> ();
+        private string _value;
+
+        public string Value
+        {
+            get => _value;
+            set
+            {
+                if (_value == value) return;
+                _value = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

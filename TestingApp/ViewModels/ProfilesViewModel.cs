@@ -13,6 +13,8 @@ namespace FileSorter.ViewModels
             GoBackCommand = new RelayCommand(goBack);
             AddRuleCommand = new RelayCommand(AddRule);
             RemoveRuleCommand = new RelayCommand<Rule>(RemoveRule);
+            AddExtensionCommand = new RelayCommand<Rule>(AddExtension);
+            RemoveExtensionCommand = new RelayCommand(RemoveExtension);
         }
 
 
@@ -22,6 +24,8 @@ namespace FileSorter.ViewModels
         public ICommand AddRuleCommand { get; }
         public ICommand RemoveRuleCommand { get; }
 
+        public ICommand AddExtensionCommand { get; }
+        public ICommand RemoveExtensionCommand { get; }
 
         private void AddRule()
         {
@@ -35,6 +39,17 @@ namespace FileSorter.ViewModels
                 Rules.Remove(rule);
             }
             
+        }
+
+        private void AddExtension(Rule rule) 
+        {
+            rule.Extensions.Add(new ExtensionItem());
+            Console.WriteLine("Added");
+        }
+
+        private void RemoveExtension() 
+        {
+
         }
 
     }
