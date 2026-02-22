@@ -1,8 +1,11 @@
-﻿namespace FileSorter.ViewModels
+﻿using FileSorter.Rule_system;
+
+namespace FileSorter.ViewModels
 {
     public class RootViewModel : ViewModelBase
     {
         private readonly ISorter _sorter;
+        private readonly RuleService _ruleService = new RuleService();
 
         public ViewModelBase CurrentViewModel { get; private set; }
 
@@ -14,8 +17,9 @@
         {
             if (_sorter == null)
             {
-                _sorter = new Sorter();
+                _sorter = new Sorter(_ruleService);
             }
+            _ruleService.Load();
             ShowMain();
         }
 
@@ -39,7 +43,7 @@
 
         private void ShowProfiles()
         {
-            _profilesVm ??= new ProfilesViewModel(ShowMain);
+            _profilesVm ??= new ProfilesViewModel(_ruleService, ShowMain);
             CurrentViewModel = _profilesVm;
             OnPropertyChanged(nameof(CurrentViewModel));
         }

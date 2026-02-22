@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileSorter.Rule_system;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,26 @@ namespace FileSorter
 
     public class Sorter : ISorter
     {
+        private readonly RuleService _ruleService;
+
+        public Sorter(RuleService ruleService) 
+        {
+            _ruleService = ruleService;
+        }
+
+        private static string NormalizeExtension(string extension)
+        {
+            if (string.IsNullOrWhiteSpace(extension))
+                return string.Empty;
+
+            extension = extension.Trim().ToLowerInvariant();
+
+            if (!extension.StartsWith("."))
+                extension = "." + extension;
+
+            return extension;
+        }
+
         public void Sort(Action<string> reportStatus)
         {
             string downloadsPath = Properties.Settings.Default.TargetFolder;

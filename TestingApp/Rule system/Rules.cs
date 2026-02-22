@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Windows.Input;
 
 namespace FileSorter.Rule_system
@@ -13,6 +14,7 @@ namespace FileSorter.Rule_system
         public string TargetFolder { get; set; }
         public ObservableCollection<ExtensionItem> Extensions { get; set; } = new ObservableCollection<ExtensionItem>();
 
+        [JsonIgnore]
         public ICommand RemoveExtensionCommand { get; }
 
         public Rule() 

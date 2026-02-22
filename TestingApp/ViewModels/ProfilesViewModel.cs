@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using FileSorter.Rule_system;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using FileSorter.Rule_system;
 
 namespace FileSorter.ViewModels
 {
@@ -9,26 +9,34 @@ namespace FileSorter.ViewModels
     {
         public ICommand GoBackCommand { get; }
 
-        public ProfilesViewModel(Action goBack)
+        public ProfilesViewModel(RuleService ruleService, Action goBack)
         {
-            GoBackCommand = new RelayCommand(goBack);
+            _ruleService = ruleService;
+            GoBackCommand = new RelayCommand(() => { RequestSave(); goBack(); });
             AddRuleCommand = new RelayCommand(AddRule);
+            SaveRulesCommand = new RelayCommand(SaveRules);
             RemoveRuleCommand = new RelayCommand<Rule>(RemoveRule);
             AddExtensionCommand = new RelayCommand<Rule>(AddExtension);
         }
 
 
         //RULES
-        public ObservableCollection<Rule> Rules { get; set; } = new ObservableCollection<Rule>();
+        private readonly RuleService _ruleService;
+
+        public ObservableCollection<Rule> Rules => _ruleService.Rules;
 
         public ICommand AddRuleCommand { get; }
+        public ICommand SaveRulesCommand { get; }
         public ICommand RemoveRuleCommand { get; }
 
         public ICommand AddExtensionCommand { get; }
 
+        private bool changesMade = false;
+
         private void AddRule()
         {
             Rules.Add(new Rule());
+            changesMade = true;
         }
 
         private void RemoveRule(Rule rule)
@@ -37,13 +45,31 @@ namespace FileSorter.ViewModels
             {
                 Rules.Remove(rule);
             }
-            
+            changesMade = true;
+        }
+
+        private void RequestSave()
+        {
+            if (changesMade && MessageBox.Show("You have unsaved changes, save rules?", "Save rules", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                SaveRules(); 
+            }else
+            {
+                _ruleService.Load();
+            }
+            changesMade = false;
+        }
+
+       private void SaveRules()
+        {
+            _ruleService.Save();
+            changesMade = false;
         }
 
         private void AddExtension(Rule rule) 
         {
             rule.Extensions.Add(new ExtensionItem());
-            Console.WriteLine("Added");
+            changesMade = true;
         }
 
 
