@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using FileSorter.Rule_system;
 
@@ -14,7 +15,6 @@ namespace FileSorter.ViewModels
             AddRuleCommand = new RelayCommand(AddRule);
             RemoveRuleCommand = new RelayCommand<Rule>(RemoveRule);
             AddExtensionCommand = new RelayCommand<Rule>(AddExtension);
-            RemoveExtensionCommand = new RelayCommand(RemoveExtension);
         }
 
 
@@ -25,7 +25,6 @@ namespace FileSorter.ViewModels
         public ICommand RemoveRuleCommand { get; }
 
         public ICommand AddExtensionCommand { get; }
-        public ICommand RemoveExtensionCommand { get; }
 
         private void AddRule()
         {
@@ -34,7 +33,7 @@ namespace FileSorter.ViewModels
 
         private void RemoveRule(Rule rule)
         {
-            if (rule != null)
+            if (rule != null && MessageBox.Show("Do you want to remove the rule: " + rule.TargetFolder + "?", "Remove rule", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 Rules.Remove(rule);
             }
@@ -47,10 +46,7 @@ namespace FileSorter.ViewModels
             Console.WriteLine("Added");
         }
 
-        private void RemoveExtension() 
-        {
 
-        }
 
     }
 }
