@@ -1,4 +1,5 @@
 ﻿using FileSorter.Rule_system;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -17,6 +18,9 @@ namespace FileSorter.ViewModels
             SaveRulesCommand = new RelayCommand(SaveRules);
             RemoveRuleCommand = new RelayCommand<Rule>(RemoveRule);
             AddExtensionCommand = new RelayCommand<Rule>(AddExtension);
+
+            ImportCommand = new RelayCommand(ImportRules);
+            ExportCommand = new RelayCommand(ExportRules);
         }
 
 
@@ -30,6 +34,9 @@ namespace FileSorter.ViewModels
         public ICommand RemoveRuleCommand { get; }
 
         public ICommand AddExtensionCommand { get; }
+
+        public ICommand ImportCommand { get; }
+        public ICommand ExportCommand { get; }
 
         private bool changesMade = false;
 
@@ -64,6 +71,7 @@ namespace FileSorter.ViewModels
         {
             _ruleService.Save();
             changesMade = false;
+            MessageBox.Show("Rules Saved.");
         }
 
         private void AddExtension(Rule rule) 
@@ -72,7 +80,37 @@ namespace FileSorter.ViewModels
             changesMade = true;
         }
 
+        private void ImportRules ()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = "Import Rules",
+                Filter = "JSON files (*.json)|*.json"
+            };
 
+            if (dialog.ShowDialog() == true)
+            {
+                _ruleService.Load(dialog.FileName);
+                changesMade = true;
+            }
+        }
 
+        private void ExportRules()
+        {
+            var dialog = new SaveFileDialog
+            {
+                Title = "Export ruleset file",
+                Filter = "JSON files (*.json)|*.json",
+                DefaultExt = ".json",
+                AddExtension = true,
+                FileName = "rules.json"
+
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                _ruleService.Save(dialog.FileName);
+            }
+        }
     }
 }

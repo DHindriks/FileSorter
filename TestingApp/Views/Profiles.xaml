@@ -69,6 +69,18 @@
 
             </StackPanel>
         </ScrollViewer>
-    <Button Grid.Row="2" Content="Save rules" Command="{Binding SaveRulesCommand}" Margin="10" Height="20" Width="300" FontWeight="Bold"/>
+        
+        <!--Saving and exporting-->
+        <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Content="Save rules" Command="{Binding SaveRulesCommand}" Margin="5" Height="20" Width="150" FontWeight="Bold"/>
+            <Button Grid.Column="1" Content="Import rules" Command="{Binding ImportCommand}" Margin="5" Height="20" Width="150" FontWeight="Bold"/>
+            <Button Grid.Column="2" Content="Export rules" Command="{Binding ExportCommand}" Margin="5" Height="20" Width="150" FontWeight="Bold"/>
+        </Grid>
     </Grid>
 </UserControl>

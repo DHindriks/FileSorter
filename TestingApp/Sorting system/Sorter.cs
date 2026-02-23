@@ -33,51 +33,55 @@ namespace FileSorter
         {
             string downloadsPath = Properties.Settings.Default.TargetFolder;
 
-            // Category → extensions
-            var rules = new Dictionary<string, string[]>
+            // creates all target folders
+            foreach (var rule in _ruleService.Rules)
             {
-                ["java"] = new[] { ".jar" },
-
-                ["zip"] = new[] { ".zip", ".rar", ".7z" },
-
-                ["images"] = new[] { ".jpg", ".jpeg", ".png", ".gif", ".ico", ".webp", ".xcf" },
-
-                ["executables"] = new[] { ".exe", ".iso", ".msi" },
-
-                ["text"] = new[] { ".txt", ".doc", ".rtf", ".pptx", ".xlsx", ".pdf" },
-
-                ["sound"] = new[] { ".mp3", ".wav", ".ogg", ".m4a" },
-
-                ["videos"] = new[] { ".mp4", ".webm" }
-            };
-
-            // Process each category
-            foreach (var rule in rules)
-            {
-                string targetDir = Path.Combine(downloadsPath, rule.Key);
-                Directory.CreateDirectory(targetDir);
-
-                foreach (var file in Directory.GetFiles(downloadsPath))
+                if (!string.IsNullOrWhiteSpace(rule.TargetFolder))
                 {
-                    string extension = Path.GetExtension(file).ToLowerInvariant();
-
-                    if (rule.Value.Contains(extension))
-                    {
-                        reportStatus("Moving file: " + file.ToString() + " to: " + targetDir);
-                        MoveFileSafely(file, targetDir);
-                    }
+                    string targetDir = Path.Combine(downloadsPath, rule.TargetFolder);
+                    Directory.CreateDirectory(targetDir);
                 }
             }
 
-            // Miscellaneous (everything else)
             string miscDir = Path.Combine(downloadsPath, "miscellaneous");
             Directory.CreateDirectory(miscDir);
 
+            // Build extension lookup
+            var extensionLookup = _ruleService.Rules
+                .Where(r => !string.IsNullOrWhiteSpace(r.TargetFolder))
+                .SelectMany(rule => rule.Extensions
+                    .Where(e => !string.IsNullOrWhiteSpace(e.Value))
+                    .Select(e => new
+                    {
+                        Extension = NormalizeExtension(e.Value),
+                        Rule = rule
+                    }))
+                .GroupBy(x => x.Extension, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.First().Rule,
+                    StringComparer.OrdinalIgnoreCase);
+
             foreach (var file in Directory.GetFiles(downloadsPath))
             {
-                if (Path.GetExtension(file).ToLowerInvariant() != ".crdownload") //ignore active downloads
+                string extension = Path.GetExtension(file);
+
+                if (string.Equals(extension, ".crdownload", StringComparison.OrdinalIgnoreCase)) //Ignores active downloads
+                    continue;
+
+                if (extensionLookup.TryGetValue(extension, out var matchingRule))
                 {
-                    reportStatus("Moving file: " + file.ToString() + " to: " + miscDir);
+                    string targetDir = Path.Combine(downloadsPath, matchingRule.TargetFolder);
+                    Directory.CreateDirectory(targetDir); //creates folder if it doesn't exist yet TODO: create setting in settings menu: Create empty folders.
+
+                    reportStatus($"Moving file: {file} to: {targetDir}");
+                    MoveFileSafely(file, targetDir);
+                }
+                else //Unsorted file types go into misc folder
+                {
+                    Directory.CreateDirectory(miscDir); 
+
+                    reportStatus($"Moving file: {file} to: {miscDir}");
                     MoveFileSafely(file, miscDir);
                 }
             }
