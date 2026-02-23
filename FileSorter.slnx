@@ -1,4 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/" />
-  <Project Path="TestingApp/FileSorter.csproj" />
+  <Project Path="TestingApp/FileSorter.csproj">
+    <BuildType Project="Release" />
+  </Project>
 </Solution>

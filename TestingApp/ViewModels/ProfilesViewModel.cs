@@ -92,6 +92,7 @@ namespace FileSorter.ViewModels
             {
                 _ruleService.Load(dialog.FileName);
                 changesMade = true;
+                MessageBox.Show("Ruleset imported.");
             }
         }
 
@@ -110,6 +111,7 @@ namespace FileSorter.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 _ruleService.Save(dialog.FileName);
+                MessageBox.Show("Ruleset exported.");
             }
         }
     }
